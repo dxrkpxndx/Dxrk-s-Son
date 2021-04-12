@@ -43,30 +43,30 @@ tips = [
   ]
 
 grabify_links = [
-'lovebird.guru',
-'trulove.guru',
-'dateing.club',
+'https://lovebird.guru',
+'https://trulove.guru',
+'https://dateing.club',
 'otherhalf.life',
-'shrekis.life',
-'headshot.monster',
-'gaming-at-my.best',
-'progaming.monster',
-'yourmy.monster',
-'screenshare.host',
-'imageshare.best',
-'screenshot.best',
-'gamingfun.me',
-'catsnthing.com',
-'mypic.icu',
-'catsnthings.fun',
-'curiouscat.club',
-'joinmy.site',
-'fortnitechat.site',
-'fortnight.space',
-'freegiftcards.co',
-'stopify.co',
-'leancoding.co',
-'grabify.link'
+'https://shrekis.life',
+'https://headshot.monster',
+'https://gaming-at-my.best',
+'https://progaming.monster',
+'https://yourmy.monster',
+'https://screenshare.host',
+'https://imageshare.best',
+'https://screenshot.best',
+'https://https://gamingfun.me',
+'https://catsnthing.com',
+'https://mypic.icu',
+'https://catsnthings.fun',
+'https://curiouscat.club',
+'https://joinmy.site',
+'https://fortnitechat.site',
+'https://fortnight.space',
+'https://freegiftcards.co',
+'https://stopify.co',
+'https://leancoding.co',
+'https://grabify.link'
 ]
 
 status = cycle([
@@ -167,6 +167,8 @@ async def on_message(message):
       await message.add_reaction(emoji)
 
     # Ping Command
+    if message.content.startswith('TestPing'):
+      await message.channel.send(f" My Latency Is {round(client.latency *1000)} Milliseconds!!")
 
     #  await message.channel.send(f"{client.latency}")
 
