@@ -10,6 +10,8 @@ from itertools import cycle
 import asyncio
 from discord.ext import commands
 import logging 
+import datetime
+import json
 
 client = discord.Client()
 
@@ -21,37 +23,59 @@ async def on_ready():
   print('{0.user}'.format(client))
   print('Is Online')
   print('-----------')
-  print('Dont Fuck This Up')
 
     # Status Task
 
-@tasks.loop(seconds=3.2)
+@tasks.loop(seconds=2)
 async def change_status():
   await client.change_presence(activity=discord.Game(next(status)))
 
 # Actions
 
-coinflip_actions = ['You Got  **Heads!!**', '>>> You Got **Tails!!**']
+client.blacklisted_users = []
+
+coinflip_actions = ['You Got  __**Heads!!**__', '>>> You Got __**Tails!!**__']
 
 tips = [
-  '> **Tip** Join The Community By Doing __**d/support**__ If You Need Any Help',
   '> **Tip** __**d/doggo**__ Sends Cute Images Of Dogs!!',
-  '> **Tip** __**d/list**__ Sends A List Of all The Servers I Am In In!!',
+  '> **Tip** Join The Community!!',
+  '> **Tip** Join The Support Server If You Need Any Help!!'
   ]
- 
-grabify_links = ['']
 
-invite_links = ['']
+grabify_links = [
+'lovebird.guru',
+'trulove.guru',
+'dateing.club',
+'otherhalf.life',
+'shrekis.life',
+'headshot.monster',
+'gaming-at-my.best',
+'progaming.monster',
+'yourmy.monster',
+'screenshare.host',
+'imageshare.best',
+'screenshot.best',
+'gamingfun.me',
+'catsnthing.com',
+'mypic.icu',
+'catsnthings.fun',
+'curiouscat.club',
+'joinmy.site',
+'fortnitechat.site',
+'fortnight.space',
+'freegiftcards.co',
+'stopify.co',
+'leancoding.co',
+'grabify.link'
+]
 
 status = cycle([
-'d/help',  
-'Made By DxrkPxndx',
-'d/support',
-'I Am Online',
-'Join The Community!!'
+'d/help',
+'d/invite',
+'Join The Community!!',
 ])
 
-inspires = ['“Do what you can, with what you have, where you are.” – Theodore Roosevelt.', '“If you can dream it, you can do it.” – Walt Disney.']
+emoji = '\N{THUMBS UP SIGN}'
 
 # API Commands
 
@@ -65,17 +89,8 @@ def get_puppy():
   e.set_image(url=embedpic)
   return(e)
 
-# Get Meme API NOT READY
-
-def get_anime():
-  response = requests.get("https://animechan.vercel.app/api/random")
-  embed_data = json.loads(response.text)
-  string=embedpic = embed_data['message']
-  e = discord.Embed(title= 'Oni-Chan')
-  e.set_image(url=embedpic)
-  return(e)
-
   # Get Quote API
+
 
 def get_quote():
   response = requests.get("https://zenquotes.io/api/random")
@@ -83,28 +98,62 @@ def get_quote():
   quote = "**" + json_data[0]['q'] + "** *-" + json_data[0]['a'] + "*"
   return(quote)
 
+# Webhook api
+
+def get_upvote():
+  response = requests.get("https://discord.com/api/webhooks/829706631834632243/GxEAqOd0132ESYkmyDfvR2OGaXkU1wsLEotOACIS6k9cdP-VapCxwyuWo9LMxakMQwOI")
+  json_data = json.loads(response.text)
+  upvote = "**" + json_data[0]['q'] + "** *-" + json_data[0]['a'] + "*"
+  return(upvote)
+
+
 #Main Features 
+
+#vars
+owners_id = [517020964261855232, 659813166678540320]
 
 @client.event
 async def on_message(message):
     if message.author.bot :
       return
 
+    for i in range(len(grabify_links)):
+      if message.content == grabify_links[i]:
+        await message.delete()
+        await message.channel.send(f"Really {message.author}??\n Manz Sent A Grabify Link Lmao")
+      elif f"{message.content}" == f"https://{grabify_links[i]}":
+        await message.delete()
+        await message.channel.send("u nub")
+        break
 
+    if message.content.startswith("d/echo"):
+      await message.channel.send(message.content[7:].format("```message```"))
+      await message.add_reaction(emoji)
 
-    # Help DM
+    if 'Hello <@796802441000648714>' in message.content:
+      await message.channel.send(f'Check Your DMs {message.author}')
+      await message.author.send(f"Hello {message.author.mention}\n If There Is Any Problems Feel Free To Type `d/help` And Join The Support Server!!")
+      await message.add_reaction(emoji)
 
-    if message.content.startswith('d/help'):
-      await message.channel.send(f'Hello {message.author.mention} I Have Just Sent You A DM.\nIf Your DMs Are Off You Wont Get A DM From Me :cry:')
-      await message.author.send(f"Hello {message.author}\nI Am Dxrk's Son A Bot Made By DxrkPxndx Him Self\nIf There Is Any Problems With The Bot Feel Free To Join The Suppport Server And Join  One Of The Support Voice Channels And Someone Will Be With You Shortly Or If Its A Question Feel Free To Ask It In Our FAQ Channel\nhttps://discord.gg/KrXbCt2FjD")
-      print(f"DM was sent to {message.author}")
+    if '<@796802441000648714>' in message.content:
+      await message.channel.send(f'Check Your DMs {message.author}')
+      await message.author.send(f"Hello {message.author.mention}\n If There Is Any Problems Feel Free To Type `d/help` And Join The Support Server!!")
+      await message.add_reaction(emoji)
 
     # Delete Invite Links
 
-    if message.content.startswith('https://discord.gg/'):
+    if 'https://discord.gg/' in message.content:
       await message.delete()
-      await message.author.send(f"No Links Allowed!!")
+      await message.author.send("No Links Allowed!!")
       print(f"Link Was Deleted, Sent By {message.author} ") 
+
+    if 'Nigger' in message.content:
+      await message.delete()
+      await message.author.send(f"Really {message.author.mention}")
+
+    if 'nigger' in message.content:
+      await message.delete()
+      await message.author.send(f"Really {message.author.mention}")
 
          # Inspire Command
 
@@ -114,23 +163,8 @@ async def on_message(message):
       quote = get_quote()
       quote_text = '**__Quote:__**\n> {}'.format(quote)
       await message.channel.send(quote_text)
-      print(f'request.zeninspire - {message.author}')
-
-
-
-    if message.content.startswith('d!list'):
-      servers = list(client.guilds)
-      await message.channel.send(f"Connected on {str(len(servers))}  servers:")
-      await message.channel.send('\n' .join(guild.name for guild in  client.guilds))
-      print(f"List Command Ran By {message.author}  ") 
-
-    # Botinfo Command
-
-    if message.content.startswith('d/botinfo'):
-        embedVar = discord.Embed(title="**Bot Info**", description="Dxrk's Son\nStart Date - Feb 24th 3:48PM 2021\nMade With - Repl.it\n Lines Of Code - 171\nFiles - 3\nBot Status - Online | Thanks To UptimeRobot\n Owner - DxrkPxndx\nDevs - Python", color=message.guild.get_member(client.user.id).color)
-        embedVar.add_field(name="Dxrks Community And Support Server", value="Join The Discord If You Need Any Help\n https://discord.gg/3MGV26qnQy", inline=True)
-        await message.channel.send(embed=embedVar)
-        print(f"Info Command Ran By {message.author}") 
+      print(f'Inspire Command Ran By {message.author}')
+      await message.add_reaction(emoji)
 
     # Ping Command
 
@@ -147,6 +181,7 @@ async def on_message(message):
         embed=discord.Embed(title="Pong", description=f":ping_pong: Pingpingpingpingping!\n My Latency Is {round(client.latency *1000)} Milliseconds!", color=message.guild.get_member(client.user.id).color)
       await message.channel.send(embed=embed)
       print(f"Ping Command Ran By {message.author} ") 
+      await message.add_reaction(emoji)
 
     # Doggo Command
 
@@ -155,63 +190,50 @@ async def on_message(message):
       await message.channel.send(random.choice(tips))
       await message.channel.send(embed=embed)
       print(f"Doggo Ran By {message.author} ") 
-
+      await message.add_reaction(emoji)
  
     # Meme Command NOT DONE 
-
-    if message.content.startswith('d/anime'):
-      embed = get_anime()
-      await message.channel.send(random.choice(tips))
-      await message.channel.send(embed=embed)
-      print(f"MemeCommand Ran By {message.author} ") 
 
     # Coinflip Command
 
     if message.content.startswith('d/coinflip'):
       await message.channel.send(random.choice(coinflip_actions))
       print(f"Coinflip Command Ran By {message.author} ") 
+      await message.add_reaction(emoji)
 
     # Invite Command
 
     if message.content.startswith('d/invite'):
         await message.channel.send(random.choice(tips))
-        embedVar = discord.Embed(title="**Invite**", description="Add The Bot To Your Own Server", color=message.guild.get_member(client.user.id).color)
-        embedVar.add_field(name="Dxrks Community", value="Join The Discord If You Need Any Help", inline=True)
-        embedVar.add_field(name="Dxrk's Son Discord Bot List Link", value="https://discordbotlist.com/bots/dxrks-son\nhttps://top.gg/bot/796802441000648714", inline=True)
+        embedVar = discord.Embed(title="**Invite**", description="Add The Bot To Your Own Server!!", color=message.guild.get_member(client.user.id).color)
+        embedVar.add_field(name="Dxrk's Son Bot Pages", value="[DiscrdBotList](https://discordbotlist.com/bots/dxrks-son)\n[Top.gg](https://top.gg/bot/796802441000648714)", inline=True)
         await message.channel.send(embed=embedVar)
         print(f"Invite Command Ran By {message.author} ") 
+        await message.add_reaction(emoji)
 
     # Help Command
 
     if message.content.startswith('d/help'):
-      embedVar = discord.Embed(title=":star2: **Help** :star2:", description="All Commands You Can Do With Dxrk's Son!!\n__**Main Commands**__\nd/support\nd/devs\nd/invite\nd/ping\nd/botinfo\nd/vote\n__**Fun Commands**__\nd/inspire\nd/followers\nd/coinflip\nd/doggo ", color=message.guild.get_member(client.user.id).color)
+      embedVar = discord.Embed(title=":star2: **Help** :star2:", description="All Commands You Can Do With Dxrk's Son!!\n__**Main Commands**__\nd/support\nd/devs\nd/invite\nd/ping\nd/vote\n__**Fun Commands**__\nd/inspire\nd/followers\nd/coinflip\nd/echo\nd/doggo ", color=message.guild.get_member(client.user.id).color)
+      embedVar.add_field(name="__**Our Discord Servers**__", value="[**Community Server**](https://discord.gg/325CGZBCfD)\n[**Support Server**](https://discord.gg/j9b9DtfheU)", inline=True)
       await message.channel.send(embed=embedVar)
-      print(f"Help Command Ran By {message.author} ")
-
-    # Devs Command
+      await message.add_reaction(emoji)
 
     if message.content.startswith('d/devs'):
-        embedVar = discord.Embed(title="Helpers", description="DxrkPxndx \nPython#2313", color=message.guild.get_member(client.user.id).color)
-        embedVar.add_field(name="Dxrks Community", value="Join The Discord If You Need Any Help", inline=True)
-        embedVar.add_field(name="Invite Link", value="Type d/help If You Need Any Help", inline=True)
+        embedVar = discord.Embed(title="Helpers", description="DxrkPxndx \nBubz", color=message.guild.get_member(client.user.id).color)
+        embedVar.add_field(name="__**Community**__", value="Join The Support Server\n[**Support Server**](https://discord.gg/j9b9DtfheU)", inline=True)
         await message.channel.send(embed=embedVar)
         print(f"Devs Command Ran By {message.author} ") 
+        await message.add_reaction(emoji)
 
     # Vote Command
 
     if message.content.startswith('d/vote'):
         embedVar = discord.Embed(title="Vote For Dxrk's Son", description="Voters Will A Thanks If You DM DxrkPxndx With Proof You Have Voted", color=message.guild.get_member(client.user.id).color)
-        embedVar.add_field(name="Discord Bot List", value="https://discordbotlist.com/bots/dxrks-son/upvote", inline=True)
+        embedVar.add_field(name="Upvote", value="[**Top.gg Upvote Dxrks Son**](https://top.gg/bot/796802441000648714/vote)", inline=True)
         await message.channel.send(embed=embedVar)
         print(f"Vote Command Ran By {message.author} ") 
-
-    # Support Command
-
-    if message.content.startswith('d/support'):
-        embedVar = discord.Embed(title="__**Support Server**__", description="Join The Discord It You Have Any Questions About The Bot", color=message.guild.get_member(client.user.id).color)
-        embedVar.add_field(name="__**Invite Link**__", value="Join Or Text In One Of Our Support Channels If You Need Help\nhttps://discord.gg/KrXbCt2FjD", inline=True)
-        await message.channel.send(embed=embedVar)
-        print(f"Support Command Ran By {message.author} ") 
+        await message.add_reaction(emoji)
 
     # Follower Command
 
@@ -220,8 +242,22 @@ async def on_message(message):
       embedVar.add_field(name="How To Be Added To This Board", value="DM DxrkPxndx#4425 Saying Your Server Name And That You Have The Bot In Your Server", inline=True)
       await message.channel.send(embed=embedVar)
       print(f"Follower Command Ran By {message.author} ")
+      await message.add_reaction(emoji)
 
-
+    if message.content.startswith('d/list'):
+      for i in range(len(owners_id)):
+        servers = list(client.guilds)
+        if message.author.id == owners_id[i]:
+          await message.channel.send(f'Check Your DMs {message.author} : ) ')
+          await message.author.send(f"Connected on {str(len(servers))}  servers:")
+          await message.author.send('\n' .join(guild.name for guild in  client.guilds))
+        elif message.author.id == owners_id[i+1]:
+          pass
+        elif message.author.id == owners_id[i-1]:
+          pass
+        else:
+          await message.channel.send('You Do Not Have Permission To Use This Command\n\nSad : ( ')
+      await message.add_reaction(emoji)
 
 keep_alive()
 client.run(os.getenv('TOKEN')) 
