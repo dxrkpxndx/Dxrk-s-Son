@@ -216,7 +216,7 @@ async def on_message(message):
     # Help Command
 
     if message.content.startswith('d/help'):
-      embedVar = discord.Embed(title=":star2: **Help** :star2:", description="All Commands You Can Do With Dxrk's Son!!\n__**Main Commands**__\nd/support\nd/devs\nd/invite\nd/ping\nd/vote\n__**Fun Commands**__\nd/inspire\nd/followers\nd/coinflip\nd/echo\nd/doggo ", color=message.guild.get_member(client.user.id).color)
+      embedVar = discord.Embed(title=":star2: **Help** :star2:", description="All Commands You Can Do With Dxrk's Son!!\n__**Main Commands**__\nd/support\nd/devs\nd/invite\nd/ping\nd/vote\n__**Fun Commands**__\nd/inspire\nd/followers\nd/coinflip\nd/echo\nd/doggo\nd/servers\nd/list - Mod Command Only\n", color=message.guild.get_member(client.user.id).color)
       embedVar.add_field(name="__**Our Discord Servers**__", value="[**Community Server**](https://discord.gg/325CGZBCfD)\n[**Support Server**](https://discord.gg/j9b9DtfheU)", inline=True)
       await message.channel.send(embed=embedVar)
       await message.add_reaction(emoji)
@@ -260,6 +260,10 @@ async def on_message(message):
         else:
           await message.channel.send('You Do Not Have Permission To Use This Command\n\nSad : ( ')
       await message.add_reaction(emoji)
+
+    if message.content.startswith ('d/servers'):
+      servers = list(client.guilds)
+      await message.channel.send(f"Connected on {str(len(servers))}  Servers")
 
 keep_alive()
 client.run(os.getenv('TOKEN')) 
